@@ -1,0 +1,63 @@
+[project]
+name = "ai-mitigation"
+version = "0.0.1"
+authors = [
+  { name="Caleb Rottman", email="crottman@hirevue.com" },
+]
+description = "Adverse impact mitigation methods for machine learning"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.7"  # tested [3.7, 3.8, 3.11]
+
+dependencies = [
+  "numpy>=1.20.3",  # tested [1.20.3, 1.24.3, 1.26.4]
+  "pandas>=1.0.5", # tested [1.0.5, 2.0.1, 2.2.1]
+  "scikit-learn>=0.24.2", # tested [0.24.2, 1.2.2, 1.4.1]
+  "tqdm",
+]
+
+[project.optional-dependencies]
+test = [
+  "pytest>=3.0.0", # tested [3.0.0, 7.3.1, 8.1.1]
+  "coverage",
+  "pytest-cov",
+  "pylint",
+]
+
+examples = [
+  "jupyter",
+  "seaborn",
+  "jupyterlab-widgets==1.1.1",
+  "ipywidgets==7.7.2",
+]
+
+all = [
+  "pytest>=3.0.0",
+  "coverage",
+  "pytest-cov",
+  "jupyter",
+  "seaborn",
+  "black[jupyter]",
+  "jupyter-black",
+  "pytest>=3.0.0",
+  "isort",
+  "pylint",
+  "jupyterlab-widgets==1.1.1",
+  "ipywidgets==7.7.2",
+]
+
+
+[tool.isort]
+profile = "black"
+line_length = 100
+
+[tool.black]
+line-length = 100
+
+
+[tool.pytest.ini_options]
+addopts = [
+  "--cov=ai_mitigation",
+  "--cov=tests",
+  "--cov-report=xml",
+]

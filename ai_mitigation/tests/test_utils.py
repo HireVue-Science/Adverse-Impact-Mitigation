@@ -4,9 +4,9 @@ from sklearn.linear_model import LogisticRegression, Ridge
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
+from ai_mitigation.demo_utils import convert_demo_dicts_to_df
 from ai_mitigation.models import MPOClassifier, MPORegressor
 from ai_mitigation.utils import get_cross_validated_scores, is_mpo_model
-from ai_mitigation.demo_utils import convert_demo_dicts_to_df
 
 from .test_mpo_models import gen_biased_dataset
 

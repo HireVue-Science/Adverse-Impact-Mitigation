@@ -1,7 +1,7 @@
 import pandas as pd
 
-from .utils import get_model_metric, calc_model_score, calc_cohens_d_pairwise
 from .demo_utils import convert_df_to_demo_dicts
+from .utils import calc_cohens_d_pairwise, calc_model_score, get_model_metric
 
 
 class MitigatorResults:

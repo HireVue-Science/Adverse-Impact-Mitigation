@@ -10,8 +10,8 @@ from sklearn.model_selection import KFold, StratifiedKFold
 from sklearn.pipeline import Pipeline
 from tqdm.auto import tqdm
 
+from .demo_utils import calc_valid_groups, convert_demo_dicts_to_df, convert_series_to_demo_dict
 from .models import MPOClassifier, MPORegressor
-from .demo_utils import convert_demo_dicts_to_df, convert_series_to_demo_dict, calc_valid_groups
 
 
 class CohensDResults:

@@ -6,11 +6,7 @@ from sklearn.model_selection import KFold, StratifiedKFold
 from tqdm.auto import tqdm, trange
 
 from . import utils
-from .demo_utils import (
-    prune_demo_dicts,
-    convert_demo_dicts_to_df,
-    convert_df_to_demo_dicts,
-)
+from .demo_utils import convert_demo_dicts_to_df, convert_df_to_demo_dicts, prune_demo_dicts
 from .mitigator_results import MitigatorResults
 
 

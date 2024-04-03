@@ -4,6 +4,7 @@ from scipy.sparse import csc_matrix
 from sklearn.base import is_classifier, is_regressor
 from sklearn.linear_model import LogisticRegression, Ridge
 
+from ai_mitigation.demo_utils import _create_mask_pairs_from_demo
 from ai_mitigation.models import (
     MPOClassifier,
     MPORegressor,
@@ -16,7 +17,6 @@ from ai_mitigation.models import (
     _cost_ols,
     _get_Xy_labeled,
 )
-from ai_mitigation.demo_utils import _create_mask_pairs_from_demo
 
 
 def gen_biased_dataset(missing_perf=False, missing_demo=False, n_rows=1000):

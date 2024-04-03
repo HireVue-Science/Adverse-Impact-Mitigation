@@ -111,6 +111,7 @@ disable=
     consider-using-assignment-expr,
     no-member,
     too-many-instance-attributes,
+    duplicate-code,
 
 
 [REPORTS]

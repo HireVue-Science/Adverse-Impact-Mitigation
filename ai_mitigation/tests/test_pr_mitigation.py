@@ -16,8 +16,8 @@ def test_pr_mitigator():
     mitigator = PredictorRemovalMitigator(Ridge(), predictors_per_step=1, param_search=True)
     mitigator.run(X=data["X"], y=data["y"], demo=data["demo"])
 
-    results = mitigator.calc_results([("Male", "Female")])
-    results = mitigator.calc_results_with_ci([("Male", "Female")])
+    mitigator.calc_results([("Male", "Female")])
+    mitigator.calc_results_with_ci([("Male", "Female")])
     mitigator.predict(data["X"], 1)
 
 
@@ -33,8 +33,8 @@ def test_pr_mitigator__nonstandard_options():
     y = data["y"] > np.mean(data["y"])
     mitigator.run(X=X, y=y, demo=data["demo"])
 
-    results = mitigator.calc_results([("Male", "Female")])
-    results = mitigator.calc_results_with_ci([("Male", "Female")])
+    mitigator.calc_results([("Male", "Female")])
+    mitigator.calc_results_with_ci([("Male", "Female")])
     mitigator.predict(data["X"], 1)
 
 
@@ -43,8 +43,8 @@ def test_pr_mitigator_cv():
     mitigator = PredictorRemovalMitigatorCV(Ridge(), predictors_per_step=1, verbose=0)
     mitigator.run(X=data["X"], y=data["y"], demo=data["demo"])
 
-    results = mitigator.calc_results([("Male", "Female")])
-    results = mitigator.calc_results_with_ci([("Male", "Female")])
+    mitigator.calc_results([("Male", "Female")])
+    mitigator.calc_results_with_ci([("Male", "Female")])
 
 
 def test_pr_mitigator_train_test():
@@ -59,6 +59,6 @@ def test_pr_mitigator_train_test():
         demo_test=data["demo_test"],
     )
 
-    results = mitigator.calc_results([("Male", "Female")])
-    results = mitigator.calc_results_with_ci([("Male", "Female")])
+    mitigator.calc_results([("Male", "Female")])
+    mitigator.calc_results_with_ci([("Male", "Female")])
     mitigator.predict(data["X_test"], 1)

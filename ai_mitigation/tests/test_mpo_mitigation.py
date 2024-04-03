@@ -51,9 +51,8 @@ def test_mpo_mitigator():
     data = gen_example_data()
     mitigator = MultiPenaltyMitigator(Ridge(), betas=[0, 1])
     mitigator.run(X=data["X"], y=data["y"], demo=data["demo"])
-    results = mitigator.calc_results([("Male", "Female")])
-    results = mitigator.calc_results([("Male", "Female")])
-    results = mitigator.calc_results_with_ci([("Male", "Female")])
+    mitigator.calc_results([("Male", "Female")])
+    mitigator.calc_results_with_ci([("Male", "Female")])
 
 
 def test_mpo_mitigator_classifier():
@@ -62,17 +61,16 @@ def test_mpo_mitigator_classifier():
     y = data["y"] > np.mean(data["y"])
     X = csc_matrix(data["X"])
     mitigator.run(X=X, y=y, demo=data["demo"])
-    results = mitigator.calc_results([("Male", "Female")])
-    results = mitigator.calc_results([("Male", "Female")])
-    results = mitigator.calc_results_with_ci([("Male", "Female")])
+    mitigator.calc_results([("Male", "Female")])
+    mitigator.calc_results_with_ci([("Male", "Female")])
 
 
 def test_mpo_mitigator_cv():
     data = gen_example_data()
     mitigator = MultiPenaltyMitigatorCV(Ridge(), betas=[0, 1])
     mitigator.run(X=data["X"], y=data["y"], demo=data["demo"])
-    results = mitigator.calc_results([("Male", "Female")])
-    results = mitigator.calc_results_with_ci([("Male", "Female")])
+    mitigator.calc_results([("Male", "Female")])
+    mitigator.calc_results_with_ci([("Male", "Female")])
 
 
 def test_mpo_mitigator_train_test():
@@ -86,5 +84,5 @@ def test_mpo_mitigator_train_test():
         y_test=data["y_test"],
         demo_test=data["demo_test"],
     )
-    results = mitigator.calc_results([("Male", "Female")])
-    results = mitigator.calc_results_with_ci([("Male", "Female")])
+    mitigator.calc_results([("Male", "Female")])
+    mitigator.calc_results_with_ci([("Male", "Female")])

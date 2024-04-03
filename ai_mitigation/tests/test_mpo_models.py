@@ -3,8 +3,6 @@ import pytest
 from scipy.sparse import csc_matrix
 from sklearn.base import is_classifier, is_regressor
 from sklearn.linear_model import LogisticRegression, Ridge
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
 
 from ai_mitigation.models import (
     MPOClassifier,
@@ -18,7 +16,7 @@ from ai_mitigation.models import (
     _cost_ols,
     _get_Xy_labeled,
 )
-from ai_mitigation.demo_utils import convert_demo_dicts_to_df, _create_mask_pairs_from_demo
+from ai_mitigation.demo_utils import _create_mask_pairs_from_demo
 
 
 def gen_biased_dataset(missing_perf=False, missing_demo=False, n_rows=1000):
@@ -49,12 +47,13 @@ def gen_biased_dataset(missing_perf=False, missing_demo=False, n_rows=1000):
 
 
 @pytest.mark.parametrize(
-    "fit_intercept,C", [
+    "fit_intercept,C",
+    [
         [True, 1.0],
         [True, 0.01],
         [False, 1.0],
         [False, 0.01],
-    ]
+    ],
 )
 def test_logistic_regression_to_sklearn(fit_intercept, C):
     """if beta == 0, make sure we get the sklearn solution"""
@@ -75,17 +74,20 @@ def test_logistic_regression_to_sklearn(fit_intercept, C):
     assert np.isclose(sklearn_model.intercept_, mpo_model.intercept_, rtol=1e-03)
 
     assert np.allclose(sklearn_model.predict_proba(X), mpo_model.predict_proba(X), rtol=1e-03)
-    assert np.allclose(sklearn_model.predict_log_proba(X), mpo_model.predict_log_proba(X), rtol=1e-03)
+    assert np.allclose(
+        sklearn_model.predict_log_proba(X), mpo_model.predict_log_proba(X), rtol=1e-03
+    )
     assert np.array_equal(sklearn_model.predict(X), mpo_model.predict(X))
 
 
 @pytest.mark.parametrize(
-    "fit_intercept,alpha", [
+    "fit_intercept,alpha",
+    [
         [True, 1],
         [True, 500],
         [False, 1],
         [False, 500],
-    ]
+    ],
 )
 def test_ridge_regression_to_sklearn(fit_intercept, alpha):
     """if beta == 0, make sure we get the sklearn solution"""

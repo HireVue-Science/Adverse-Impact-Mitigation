@@ -21,7 +21,7 @@ test = [
   "pytest>=3.0.0", # tested [3.0.0, 7.3.1, 8.1.1]
   "coverage",
   "pytest-cov",
-  "pylint",
+  "pylint==2.17.7",
 ]
 
 examples = [
@@ -39,9 +39,8 @@ all = [
   "seaborn",
   "black[jupyter]",
   "jupyter-black",
-  "pytest>=3.0.0",
-  "isort",
-  "pylint",
+  "isort==5.13.2",
+  "pylint==2.17.7",
   "jupyterlab-widgets==1.1.1",
   "ipywidgets==7.7.2",
 ]

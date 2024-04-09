@@ -105,20 +105,26 @@ def test_ridge_regression_to_sklearn(fit_intercept, alpha):
     assert np.isclose(sklearn_model.intercept_, mpo_model.intercept_)
 
 
-def test_regressor_sparse():
+@pytest.mark.parametrize(
+    "fit_intercept,alpha",
+    [
+        [True, 0],
+        [True, 500],
+        [False, 0],
+        [False, 500],
+    ],
+)
+def test_regressor_sparse(fit_intercept, alpha):
     X, y, demo_dicts = gen_biased_dataset()
     Xsp = csc_matrix(X)
 
-    for fit_intercept in [False, True]:
-        for alpha in [0, 500]:
+    model1 = MPORegressor(alpha=alpha, fit_intercept=fit_intercept, beta=1.0)
+    model2 = MPORegressor(alpha=alpha, fit_intercept=fit_intercept, beta=1.0)
+    model1.fit(X, y, demo_dicts)
+    model2.fit(Xsp, y, demo_dicts)
 
-            model1 = MPORegressor(alpha=alpha, fit_intercept=fit_intercept, beta=1.0)
-            model2 = MPORegressor(alpha=alpha, fit_intercept=fit_intercept, beta=1.0)
-            model1.fit(X, y, demo_dicts)
-            model2.fit(Xsp, y, demo_dicts)
-
-            assert np.allclose(model1.coef_, model2.coef_)
-            assert np.isclose(model1.intercept_, model2.intercept_)
+    assert np.allclose(model1.coef_, model2.coef_)
+    assert np.isclose(model1.intercept_, model2.intercept_)
 
 
 def test_regressor_decreases_group_differences():
@@ -132,7 +138,7 @@ def test_regressor_decreases_group_differences():
     pro_coefs = []
     neg_coefs = []
 
-    for beta in [0.0, 2.0, 5.0]:
+    for beta in (0.0, 2.0, 5.0):
 
         model = MPOClassifier(C=0.01, fit_intercept=True, beta=beta)
 
@@ -158,7 +164,7 @@ def test_ridge_regression_decreases_group_differences():
     pro_coefs = []
     neg_coefs = []
 
-    for beta in [0.0, 2.0, 5.0]:
+    for beta in (0.0, 2.0, 5.0):
 
         model = MPORegressor(alpha=10, fit_intercept=True, beta=beta)
 
@@ -185,7 +191,7 @@ def test_masked_cost_functions():
     w0 = np.array([-0.5, 1.0, 2.5])
     w1 = np.array([1.0, 1.0, 1.0])
 
-    for dense in [True, False]:
+    for dense in (True, False):
         if not dense:
             csc_matrix(X)
 

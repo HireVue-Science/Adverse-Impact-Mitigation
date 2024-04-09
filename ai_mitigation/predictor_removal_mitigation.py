@@ -106,7 +106,7 @@ class PredictorRemovalMitigator(MitigatorResults):
         self.cross_validate = cross_validate
         self.param_search = param_search
         self.rank_method = rank_method
-        assert rank_method in ["weighted", "single_group"]
+        assert rank_method in {"weighted", "single_group"}
         assert not (param_search and not cross_validate)
 
     def run(self, X, y, demo):
@@ -167,9 +167,7 @@ class PredictorRemovalMitigator(MitigatorResults):
                 score, _ci = utils.calc_model_score(y, y_pred, metric)
                 if self.rank_method == "single_group":
                     print(
-                        "mitigating {} against {} (Cohens D={:.3f}, {}={:.4f})".format(
-                            low_group, high_group, d, metric, score
-                        )
+                        f"mitigating {low_group} against {high_group} (Cohens D={d:.3f}, {metric}={score:.4f})"
                     )
                 else:
                     ds = [-_[-1] for _ in mitigation_targets]
@@ -225,10 +223,10 @@ class PredictorRemovalMitigator(MitigatorResults):
         self.y = y
         self.removed_predictor_names = removed_predictor_names
         self.models = models
-        y_pred_full = np.array(y_pred_full).T
-        columns = [str(i * self.predictors_per_step) for i in range(y_pred_full.shape[1])]
+        y_pred_full_t = np.array(y_pred_full).T
+        columns = [str(i * self.predictors_per_step) for i in range(y_pred_full_t.shape[1])]
         self.df_ypred = pd.DataFrame(
-            data=np.array(y_pred_full),
+            data=np.array(y_pred_full_t),
             columns=columns,
         )
 

@@ -307,7 +307,7 @@ def _cost_bias(X, w, mask_pairs):
     """
     w = np.asarray(w)
     cost = 0.0
-    for (demo_mask, cat_mask) in mask_pairs:
+    for demo_mask, cat_mask in mask_pairs:
         demo_mask = np.asarray(demo_mask, bool)
         cat_mask = np.asarray(cat_mask, bool)
         z = (1.0 / np.sum(demo_mask) * demo_mask - 1.0 / np.sum(cat_mask) * cat_mask) @ X
@@ -341,7 +341,7 @@ def _grad_bias(X, w, mask_pairs):
     """gradient of the bias cost function"""
     w = np.asarray(w)
     grad = np.zeros(w.shape)
-    for (demo_mask, cat_mask) in mask_pairs:
+    for demo_mask, cat_mask in mask_pairs:
         z = (1.0 / np.sum(demo_mask) * demo_mask - 1.0 / np.sum(cat_mask) * cat_mask) @ X
         grad += np.sum(cat_mask) * z * (z @ w)
     return grad

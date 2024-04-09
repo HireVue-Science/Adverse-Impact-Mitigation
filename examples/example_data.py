@@ -15,7 +15,6 @@ def gen_example_dataset():
     male_mask = demo_df.demo_Gender.values == "Male"
     male_mask_test = demo_df_test.demo_Gender.values == "Male"
 
-    predictors = list(range(n_predictors))
     predictor_diffs = np.linspace(-0.2, 0.4, n_predictors)
 
     y_nodiff = rng.randn(n_examples)

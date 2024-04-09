@@ -41,7 +41,7 @@ def get_cross_validated_scores(
             x_test = csc_matrix(x_test)
         y_train = y[train_index]
         if is_mpo_model(model):
-            assert demo is not None, "{} cannot fit without demo".format(model)
+            assert demo is not None, f"{model} cannot fit without demo"
             demo_train = demo.iloc[train_index, :]
             if isinstance(model, Pipeline):
                 model.fit(x_train, y_train, model__demo=demo_train)
@@ -91,9 +91,7 @@ def calc_model_score(y, y_pred, metric, alpha=0.05):
         q2 = 2 * auc**2 / (1 + auc)
         n1 = sum(y)
         n2 = len(y) - sum(y)
-        var = (auc * (1 - auc) + (n1 - 1) * (q1 - auc**2) + (n2 - 1) * (q2 - auc**2)) / (
-            n1 * n2
-        )
+        var = (auc * (1 - auc) + (n1 - 1) * (q1 - auc**2) + (n2 - 1) * (q2 - auc**2)) / (n1 * n2)
 
         se = np.sqrt(var)
         se_mult = scipy.stats.t.ppf(1 - alpha / 2.0, df=len(y))

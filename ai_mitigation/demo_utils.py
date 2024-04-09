@@ -23,9 +23,7 @@ def convert_series_to_demo_dict(ser):
     demo_dict = {}
 
     ser = ser.fillna(value="")
-    assert ser.map(type).eq(str).all(), "column '{}' is not a valid demographic column".format(
-        ser.name
-    )
+    assert ser.map(type).eq(str).all(), f"column '{ser.name}' is not a valid demographic column"
     demo_groups = [demo_group for demo_group in np.unique(ser) if demo_group != ""]
     for demo_group in demo_groups:
         demo_dict[demo_group] = (ser == demo_group).values

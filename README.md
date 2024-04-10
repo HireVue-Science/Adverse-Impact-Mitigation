@@ -1,3 +1,8 @@
+![pytest](https://github.com/HireVue-Science/Adverse-Impact-Mitigation/actions/workflows/pytest.yml/badge.svg)
+[![codecov](https://codecov.io/gh/HireVue-Science/Adverse-Impact-Mitigation/graph/badge.svg?token=RTWAD5LCVY)](https://codecov.io/gh/HireVue-Science/Adverse-Impact-Mitigation)
+![pylint](https://github.com/HireVue-Science/Adverse-Impact-Mitigation/actions/workflows/pylint.yml/badge.svg)
+![black&isort](https://github.com/HireVue-Science/Adverse-Impact-Mitigation/actions/workflows/black.yml/badge.svg)
+
 # Adverse Impact Mitigation
 
 This repository is a python implementation of two methods for adverse impact mitigaiton of machine learning models. The first (and best) method is Multipenalty Optimization, which adds a total group differences term to the objective function. The second method is Iterative Predictor Removal, which in a series of steps removes predictors that contribute to group differences.

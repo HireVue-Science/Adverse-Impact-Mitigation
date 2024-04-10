@@ -1,4 +1,4 @@
-name: Workflow for Codecov example-python
+name: coverage
 on: [push, pull_request]
 jobs:
   run:
@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: '3.10'
       - name: Install dependencies
-        run: pip install ".[all]"
+        run: pip install ".[test]"
       - name: Run tests and collect coverage
         run: pytest ai_mitigation
       - name: Upload coverage to Codecov

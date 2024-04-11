@@ -1,0 +1,13 @@
+#!bin/bash -e
+
+BASE_DIR=$(git rev-parse --show-toplevel)
+
+# setup git pre-commit hook
+ln -s -f $BASE_DIR/bin/pre-commit $BASE_DIR/.git/hooks/pre-commit
+
+# install ai_mitigation
+pip install --editable $BASE_DIR
+
+# add to python path
+SITE_DIR=$(python -c "import site; print(site.getsitepackages()[0])")
+echo "$BASE_DIR\n" > $SITE_DIR/aim.pth

@@ -216,17 +216,6 @@ def _add_const_to_X(X):
     return X_fit
 
 
-def _get_Xy_labeled(X, y):
-    """gets a target row-filtered version of X"""
-    y = np.asarray(y, "float")
-    mask = np.isfinite(y)
-    if np.all(mask):
-        return X, y
-    if sparse.issparse(X):
-        X = X.tocsr()
-    return X[mask, :], y[mask]
-
-
 def _calc_costs_ridge(X, y, w, fit_intercept, mask_pairs, alpha, beta):
     """full cost of MPO ridge"""
     return [

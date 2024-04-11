@@ -551,3 +551,4 @@ disable=
     duplicate-code,
     unsupported-assignment-operation, # False positives with DataFrames
     unsubscriptable-object, # False positives with DataFrames
+    redefined-variable-type,

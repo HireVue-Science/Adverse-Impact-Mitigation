@@ -19,7 +19,7 @@ This repository is manually installable using pip:
 pip install "./path/to/ai_mitigation"
 ```
 
-To run all examples and tests, run
+For the ability to run all examples and tests, run
 ```
 pip install "./path/to/ai_mitigation[all]"
 ```
@@ -35,12 +35,12 @@ The paper introducing these methods is:
 Rottman, C., Gardner, C., Liff, J., Mondragon, N., & Zuloaga, L. (2023). New strategies for addressing the diversity–validity dilemma with big data. Journal of Applied Psychology. Advance online publication. https://doi.org/10.1037/apl0001084
 
 
-# Development/Tests
+# Development
 
-The following lines should run successfully in the project root:
+To set up a development environment, run
+
 ```
-pytest
-pylint ai_mitigation
-black --check ai_mitigation
-isort --check ai_mitigation
+bin/setup-localdev
 ```
+
+This installs `ai_mitigation` in editable/development mode, sets up git hooks (pylint, black, isort), and adds ai_mitigation to your current venv's python .path.

@@ -15,11 +15,10 @@ from ai_mitigation.models import (
     _cost_bias,
     _cost_likelihood,
     _cost_ols,
-    _get_Xy_labeled,
 )
 
 
-def gen_biased_dataset(missing_perf=False, missing_demo=False, n_rows=1000):
+def gen_biased_dataset(missing_perf=False, missing_demo=False, n_rows=1000, binary=False):
 
     rng = np.random.RandomState(0)
 
@@ -43,6 +42,10 @@ def gen_biased_dataset(missing_perf=False, missing_demo=False, n_rows=1000):
     x3 += 0.5 * A
     X = np.vstack([x1, x2, x3]).T
 
+    if binary:
+        mask = np.isfinite(y)
+        y[mask] = y[mask] > 0
+
     return X, y, demo_dicts
 
 
@@ -58,8 +61,7 @@ def gen_biased_dataset(missing_perf=False, missing_demo=False, n_rows=1000):
 def test_logistic_regression_to_sklearn(fit_intercept, C):
     """if beta == 0, make sure we get the sklearn solution"""
 
-    X, y, demo_dicts = gen_biased_dataset()
-    y = y > 0
+    X, y, demo_dicts = gen_biased_dataset(binary=True)
 
     sklearn_model = LogisticRegression(
         penalty="l2", C=C, fit_intercept=fit_intercept, solver="lbfgs"
@@ -115,11 +117,32 @@ def test_ridge_regression_to_sklearn(fit_intercept, alpha):
     ],
 )
 def test_regressor_sparse(fit_intercept, alpha):
-    X, y, demo_dicts = gen_biased_dataset()
+    X, y, demo_dicts = gen_biased_dataset(missing_perf=True, missing_demo=True)
+    Xsp = csc_matrix(X)
+    model1 = MPORegressor(alpha=alpha, fit_intercept=fit_intercept, beta=1.0, solver="lbfgs")
+    model2 = MPORegressor(alpha=alpha, fit_intercept=fit_intercept, beta=1.0, solver="lbfgs")
+    model1.fit(X, y, demo_dicts)
+    model2.fit(Xsp, y, demo_dicts)
+
+    assert np.allclose(model1.coef_, model2.coef_)
+    assert np.isclose(model1.intercept_, model2.intercept_)
+
+
+@pytest.mark.parametrize(
+    "fit_intercept,C",
+    [
+        [True, 0.01],
+        [True, 1.0],
+        [False, 0.01],
+        [False, 1.0],
+    ],
+)
+def test_classifier_sparse(fit_intercept, C):
+    X, y, demo_dicts = gen_biased_dataset(missing_perf=True, missing_demo=True, binary=True)
     Xsp = csc_matrix(X)
 
-    model1 = MPORegressor(alpha=alpha, fit_intercept=fit_intercept, beta=1.0)
-    model2 = MPORegressor(alpha=alpha, fit_intercept=fit_intercept, beta=1.0)
+    model1 = MPOClassifier(C=C, fit_intercept=fit_intercept, beta=1.0)
+    model2 = MPOClassifier(C=C, fit_intercept=fit_intercept, beta=1.0)
     model1.fit(X, y, demo_dicts)
     model2.fit(Xsp, y, demo_dicts)
 
@@ -130,9 +153,8 @@ def test_regressor_sparse(fit_intercept, alpha):
 def test_regressor_decreases_group_differences():
     """if beta == 0, make sure we get the sklearn solution"""
 
-    X, y, demo_dicts = gen_biased_dataset()
+    X, y, demo_dicts = gen_biased_dataset(binary=True)
     mask1 = demo_dicts["Cat1"]["A"]
-    y = y > 0
 
     group_differences = []
     pro_coefs = []
@@ -195,7 +217,9 @@ def test_masked_cost_functions():
         if not dense:
             csc_matrix(X)
 
-        Xlab, ylab = _get_Xy_labeled(X, y_with_nans)
+        mask = np.isfinite(y_with_nans)
+        Xlab = X[mask, :]
+        ylab = y[mask]
 
         # performance masking
         ols_cost_nomask = _cost_ols(X, y, w0)

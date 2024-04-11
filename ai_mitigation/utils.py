@@ -77,62 +77,59 @@ def get_model_metric(model):
     return "R"
 
 
-def calc_model_score(y, y_pred, metric, alpha=0.05):
-    """calculates the masked model score. For classifiers, calculates
-    the AUC. For regressors, calculates the Pearson's R"""
-    real_mask = np.isfinite(y)
-    y = np.asarray(y)[real_mask]
-    y_pred = np.asarray(y_pred)[real_mask]
-    if metric == "AUC":
-        # returns two-sided confidence interval [CI_alpha/2, CI_(1-alpha/2)]
-        # see Hanley/MacNeil 1982.
-        auc = roc_auc_score(y, y_pred)
-        q1 = auc / (2 - auc)
-        q2 = 2 * auc**2 / (1 + auc)
-        n1 = sum(y)
-        n2 = len(y) - sum(y)
-        var = (auc * (1 - auc) + (n1 - 1) * (q1 - auc**2) + (n2 - 1) * (q2 - auc**2)) / (n1 * n2)
-
-        se = np.sqrt(var)
-        se_mult = scipy.stats.t.ppf(1 - alpha / 2.0, df=len(y))
-        CI = [auc - se_mult * se, auc + se_mult * se]
-        CI[0] = max(0, CI[0])  # threshold at [0, 1]
-        CI[1] = min(1, CI[1])
-        return auc, CI
-    if metric == "R":
-        r = pearsonr(y, y_pred)[0]
-        n = len(y)
-        if n <= 3:
-            return [-1, 1]
-        if r == 1:
-            return [r, r]
-
-        z = np.log((1 + r) / (1 - r)) / 2.0
-        se = 1.0 / np.sqrt(n - 3)
-        z_crit = norm.ppf(1 - alpha / 2.0)  # 2-tailed z critical value
-
-        conf_low = z - z_crit * se
-        conf_high = z + z_crit * se
-
-        def _z_to_r(z):
-            e = np.exp(2 * z)
-            return (e - 1) / (e + 1)
-
-        CI = [_z_to_r(conf_low), _z_to_r(conf_high)]
-        return r, CI
-    raise RuntimeError(f"unknown metric '{metric}': valid metrics are 'R' and 'AUC'")
-
-
-def _auc_variance(y, y_pred):
-    """returns variance of the AUC using Hanley/MacNeil 1982."""
+def calc_auc_with_ci(y, y_pred, alpha=0.05):
+    """returns [AUC, confidence_interval] where the confidence interval is the
+    two-sided confidence interval [CI_alpha/2, CI_(1-alpha/2)].
+    see Hanley/MacNeil 1982."""
     auc = roc_auc_score(y, y_pred)
     q1 = auc / (2 - auc)
     q2 = 2 * auc**2 / (1 + auc)
     n1 = sum(y)
     n2 = len(y) - sum(y)
     var = (auc * (1 - auc) + (n1 - 1) * (q1 - auc**2) + (n2 - 1) * (q2 - auc**2)) / (n1 * n2)
+    se = np.sqrt(var)
+    se_mult = scipy.stats.t.ppf(1 - alpha / 2.0, df=len(y))
+    CI = [auc - se_mult * se, auc + se_mult * se]
+    CI[0] = max(0.0, CI[0])  # threshold at [0, 1]
+    CI[1] = min(1.0, CI[1])
+    return auc, CI
 
-    return var
+
+def calc_r_with_ci(y, y_pred, alpha=0.05):
+    """returns [R, confidence_interval] where the confidence interval is the
+    two-sided confidence interval [CI_alpha/2, CI_(1-alpha/2)]."""
+    r = pearsonr(y, y_pred)[0]
+    n = len(y)
+    if n <= 3:
+        return r, [-1, 1]
+    if r == 1:
+        return 1, [1, 1]
+
+    z = np.log((1 + r) / (1 - r)) / 2.0
+    se = 1.0 / np.sqrt(n - 3)
+    z_crit = norm.ppf(1 - alpha / 2.0)  # 2-tailed z critical value
+
+    conf_low = z - z_crit * se
+    conf_high = z + z_crit * se
+
+    def _z_to_r(z):
+        e = np.exp(2 * z)
+        return (e - 1) / (e + 1)
+
+    CI = [_z_to_r(conf_low), _z_to_r(conf_high)]
+    return r, CI
+
+
+def calc_model_score(y, y_pred, metric, alpha=0.05):
+    """calculates the masked model score. For classifiers, calculates
+    the AUC. For regressors, calculates the Pearson's R"""
+    assert metric in {"R", "AUC"}, f"unknown metric '{metric}': valid metrics are 'R' and 'AUC'"
+    real_mask = np.isfinite(y)
+    y = np.asarray(y)[real_mask]
+    y_pred = np.asarray(y_pred)[real_mask]
+    if metric == "AUC":
+        return calc_auc_with_ci(y, y_pred, alpha)
+    return calc_r_with_ci(y, y_pred, alpha)
 
 
 def calc_cohens_d_pairwise(scores, demo):
@@ -155,7 +152,7 @@ def calc_cohens_d_pairwise(scores, demo):
 
 
 def _cohens_d(x1, x2):
-    """returns Cohen's D and standard error between two scores"""
+    """returns Cohen's D and standard error between two lists of scores"""
     n1 = len(x1)
     n2 = len(x2)
     if n1 <= 1 or n2 <= 1:

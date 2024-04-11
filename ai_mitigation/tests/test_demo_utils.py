@@ -1,13 +1,7 @@
 import numpy as np
 import pandas as pd
-import pytest
 
-from ai_mitigation.demo_utils import (
-    convert_demo_dict_to_series,
-    convert_demo_dicts_to_df,
-    convert_df_to_demo_dicts,
-    convert_series_to_demo_dict,
-)
+from ai_mitigation.demo_utils import convert_demo_dict_to_series, convert_series_to_demo_dict
 
 
 def assert_demo_dict_equals(d1, d2):
@@ -38,7 +32,7 @@ def test_convert_series_to_demo_dict():
     demo_dict = convert_series_to_demo_dict(expected_demo_dict)
     assert_demo_dict_equals(demo_dict, expected_demo_dict)
 
-    assert convert_series_to_demo_dict({}) == {}
+    assert not convert_series_to_demo_dict({})
 
 
 def test_convert_demo_dict_to_series():

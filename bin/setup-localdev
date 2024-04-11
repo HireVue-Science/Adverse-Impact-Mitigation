@@ -1,0 +1,6 @@
+#!bin/bash
+
+BASE_DIR=$(git rev-parse --show-toplevel)
+
+# setup git pre-commit hook
+ln -s -f $BASE_DIR/bin/pre-commit $BASE_DIR/.git/hooks/pre-commit

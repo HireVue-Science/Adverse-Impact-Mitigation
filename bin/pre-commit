@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# List modified Python files staged for commit
+modified_files=$(git diff --cached --name-only --diff-filter=ACM | grep '\.py$')
+
+# Exit if no modified python files
+if [ -z "$modified_files" ]; then
+    exit 0
+fi
+
+echo "Running pylint on modified files..."
+pylint $modified_files
+
+if [ $? -ne 0 ]; then
+    echo "Pylint check failed. Aborting commit."
+    exit 1
+fi
+
+echo "Pylint check passed."
+exit 0

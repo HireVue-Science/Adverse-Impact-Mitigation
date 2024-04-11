@@ -56,10 +56,13 @@ line_length = 100
 [tool.black]
 line-length = 100
 
+[tool.coverage.report]
+precision = 1
+skip_empty = true
+show_missing = true
 
 [tool.pytest.ini_options]
 addopts = [
   "--cov=ai_mitigation",
-  "--cov=tests",
   "--cov-report=xml",
 ]

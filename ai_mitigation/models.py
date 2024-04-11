@@ -79,14 +79,16 @@ class MPORegressor(BaseEstimator, RegressorMixin):
             )
 
         w = np.zeros(X_fit.shape[1])
+        assert self.solver in {
+            "newton_cg",
+            "lbfgs",
+        }, f"Unknown solver '{self.solver}'. Choose from 'lbfgs' or 'newton_cg'"
         if self.solver == "lbfgs":
             out = minimize(
                 f_norm, w, jac=f_grad, method="L-BFGS-B", options={"gtol": 1e-3, "maxiter": 100}
             )
-        elif self.solver == "newton_cg":
+        else:  # self.solver == "newton_cg"
             out = minimize(f_norm, w, jac=f_grad, method="Newton-CG", options={"xtol": 5e-6})
-        else:
-            raise ValueError(f"Unknown solver '{self.solver}'. Choose from 'lbfgs' or 'newton_cg'")
         if self.fit_intercept:
             self.coef_ = out.x[:-1]
             self.intercept_ = out.x[-1]

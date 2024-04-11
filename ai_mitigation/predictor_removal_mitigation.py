@@ -135,7 +135,7 @@ class PredictorRemovalMitigator(MitigatorResults):
         for _ in range_fun(max_steps):
             model = clone(model)
 
-            if self.cross_validate:  # calculate biases from cross validated scores
+            if self.cross_validate:  # calculate d's from cross validated scores
                 y_pred = utils.get_cross_validated_scores(X_pruned, y, model, n_splits=5)
                 if self.param_search:
                     model_test = clone(model)
@@ -155,7 +155,7 @@ class PredictorRemovalMitigator(MitigatorResults):
                             print(model)
 
                 utils.fit_model_with_nans(model, X_pruned, y)
-            else:  # calculate biases from in-sample scores
+            else:  # calculate d's from in-sample scores
                 utils.fit_model_with_nans(model, X_pruned, y)
                 y_pred = utils.get_y_pred(model, X_pruned)
 

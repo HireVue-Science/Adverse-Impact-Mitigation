@@ -13,7 +13,9 @@ from .example_data import gen_example_data
 
 def test_pr_mitigator():
     data = gen_example_data()
-    mitigator = PredictorRemovalMitigator(Ridge(), predictors_per_step=1, param_search=True)
+    mitigator = PredictorRemovalMitigator(
+        Ridge(), predictors_per_step=1, param_search=True, verbose=2
+    )
     mitigator.run(X=data["X"], y=data["y"], demo=data["demo"])
 
     mitigator.calc_results([("Male", "Female")])

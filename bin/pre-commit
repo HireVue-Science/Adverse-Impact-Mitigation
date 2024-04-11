@@ -10,11 +10,26 @@ fi
 
 echo "Running pylint on modified files..."
 pylint $modified_files
-
 if [ $? -ne 0 ]; then
     echo "Pylint check failed. Aborting commit."
     exit 1
 fi
-
 echo "Pylint check passed."
+
+echo "Running black on modified files..."
+black --check $modified_files
+if [ $? -ne 0 ]; then
+    echo "Black check failed. Aborting commit."
+    exit 1
+fi
+echo "Black check passed."
+
+echo "Running isort on modified files..."
+isort $modified_files
+if [ $? -ne 0 ]; then
+    echo "isort check failed. Aborting commit."
+    exit 1
+fi
+echo "isort check passed."
+
 exit 0
